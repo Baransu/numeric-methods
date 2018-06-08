@@ -1,14 +1,13 @@
-#define _USE_MATH_DEFINES
-
 #include <iostream>
 #include <cmath>
 #include <fstream>
 
 using namespace std;
 
+#define PI 3.14159265358979323846
 #define STEP 0.1
 #define STEP_COUNT 20
-#define METHOD_COUNT 7
+#define METHOD_COUNT 5
 
 template<typename T> void zapis_danych(T *kroki, T **wyniki);
 
@@ -42,20 +41,18 @@ template<typename T> T pochodna(T x) {
 
 template<typename T> void oblicz_roznice(T *kroki, T **wyniki) {
     T poczatek = 0.0;
-    T srodek = M_PI_2; // pi/2
-    T koniec = M_PI; // pi
+    T koniec = PI; // pi
+    T srodek = (koniec - poczatek) / 2;
     T krok = STEP;
     for (int i = 0; i < STEP_COUNT; i++) {
         kroki[i] = krok;
 
-        wyniki[0][i] = fabs(pochodna(poczatek) - roznica_progresywna(poczatek, krok));
-        wyniki[1][i] = fabs(pochodna(poczatek) - roznica_progresywna_trzypunktowa(poczatek, krok));
-        wyniki[2][i] = fabs(pochodna(srodek) - roznica_wsteczna(srodek, krok));
-        wyniki[3][i] = fabs(pochodna(srodek) - roznica_centralna(srodek, krok));
-        wyniki[4][i] = fabs(pochodna(srodek) - roznica_progresywna(srodek, krok));
-        wyniki[5][i] = fabs(pochodna(koniec) - roznica_wsteczna(koniec, krok));
-        wyniki[6][i] = fabs(pochodna(koniec) - roznica_wsteczna_trzypunktowa(koniec, krok));
-        krok *= 0.1;
+        wyniki[0][i] = fabs(pochodna(srodek) - roznica_wsteczna(srodek, krok));
+        wyniki[1][i] = fabs(pochodna(srodek) - roznica_centralna(srodek, krok));
+        wyniki[2][i] = fabs(pochodna(srodek) - roznica_progresywna(srodek, krok));
+        wyniki[3][i] = fabs(pochodna(koniec) - roznica_wsteczna(koniec, krok));
+        wyniki[4][i] = fabs(pochodna(koniec) - roznica_wsteczna_trzypunktowa(koniec, krok));
+        krok /= 10;
     }
 }
 
@@ -75,8 +72,6 @@ int main() {
         wynikiDouble[i] = new double[STEP_COUNT];
     }
 
-
-
     oblicz_roznice(krokiFloat, wynikiFloat);
     oblicz_roznice(krokiDouble, wynikiDouble);
     
@@ -92,13 +87,11 @@ template<typename T> void zapis_danych(T *kroki, T **wyniki) {
     string *opisy;
     opisy = new string[METHOD_COUNT + 1];
     opisy[0] = "Krok";
-    opisy[1] = "start prog2";
-    opisy[2] = "start prog3";
-    opisy[3] = "center wst2";
-    opisy[4] = "center centr";
-    opisy[5] = "center prog2";
-    opisy[6] = "end wst2";
-    opisy[7] = "end wst3";
+    opisy[1] = "center wst2";
+    opisy[2] = "center centr";
+    opisy[3] = "center prog2";
+    opisy[4] = "end wst2";
+    opisy[5] = "end wst3";
 
     fstream plik;
     string nazwa = "data/data_";
