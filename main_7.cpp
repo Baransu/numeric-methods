@@ -91,19 +91,20 @@ void solve_jacoby(double **A, double *x_old, double *x, double *b) {
         for (int i = 0; i < SIZE; i++) {
             sum = 0.0;
             for (int j = 0; j < SIZE; j++) {
-                if (j != i) {
+                if (j != i) { 
+                   // A to jest L + U poniewaz pomijamy glowna przekatna
                    sum += A[i][j] * x_old[j];
                 } 
             }
             x_old[i] = x[i];
-            x[i] = (b[i] - sum) / A[i][i];
+            x[i] = (b[i] - sum) / A[i][i]; // D^-1
         }
         print_table_row(A, x_old, x, b);  
     } while (iteration_counter++ < MAX_ITERATION_COUNT && estimator(x_old, x) > MAX_ERROR && residuum(A, b, x) > PRECISION);
 
     // Arbitralne ilość iteracji
-    // Kryterium dokładności wyznaczenia xn
-    // Kryterium wiarygodności xn jako przybliżenie pierwiastka
+    // Kryterium dokładności wyznaczenia xn - estymator
+    // Kryterium wiarygodności xn jako przybliżenie pierwiastka - residuum
 }
 
 void solve_gaussa_seidel(double **A, double *x_old, double *x, double *b) {
